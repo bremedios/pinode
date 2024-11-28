@@ -9,7 +9,7 @@ include_directories(../libpinode/include)
 add_executable(piheater src/main.cpp)
 
 if(EXISTS "/usr/local/lib/libwiringPi.so")
-    target_link_libraries(piheater PRIVATE pinode bpl_sys wiringPi)
+    target_link_libraries(piheater PRIVATE pinode bpl_net bpl_sys wiringPi)
 else()
     target_link_libraries(piheater PRIVATE pinode bpl_net bpl_sys)
 endif()

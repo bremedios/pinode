@@ -37,7 +37,7 @@ int main () {
     controller.setHeaterControl(controlPtr);
     controller.setPinodeClient(client);
     controller.setThreshold(0.5f);
-    controller.setTemperature(19.5f);
+    controller.setTemperature(20.0f);
 
     while (true) {
         if(!controller.Update()) {
