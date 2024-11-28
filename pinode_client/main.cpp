@@ -40,8 +40,8 @@ int main(void) {
 
     // for now we hardcode our device list.  We should read this from a file and eventually discover
 
-    deviceIps.emplace_back("127.0.0.1");
-    //deviceIps.emplace_back("192.168.1.215");
+    //deviceIps.emplace_back("127.0.0.1");
+    deviceIps.emplace_back("192.168.1.215");
 
     // initialize all clients
     for ( auto it : deviceIps) {
