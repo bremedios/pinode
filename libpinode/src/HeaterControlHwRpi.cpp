@@ -8,18 +8,20 @@
 
 #include <pinode/HeaterControlHwRpi.h>
 
+#include "Debug.h"
+
 namespace pinode {
 
     void HeaterControlHwRpi::HeaterControlHwRpi() {
         if (0 > wiringPiSetup()) {
-          std::cerr << "dht22::Create: wiringPiSetup failed" << std::endl;
+          ERROR_MSG("wiringPiSetup failed");
 
           return false;
         }
 
         if (setuid(getuid()) < 0)
         {
-          std::cerr << "dht22::Create: setuid() failed" << std::endl;
+          ERROR_MSG("setuid() failed");
           return false;
         }
 
@@ -30,11 +32,14 @@ namespace pinode {
     }// HeaterControlHwRpi
 
     void HeaterControlHwRpi::On() {
+        DEBUG_MSG("Turning Heater On");
         pinMode(m_pin, OUTPUT);
         digitalWrite(m_pin, HIGH);
+        std::cout <<
     }// On
 
     void HeaterControlHwRpi::Off() {
+        DEBUG_MSG("Turning Heater Off");
         pinMode(m_pin, OUTPUT);
         digitalWrite(m_pin, LOW);
     }// Off
