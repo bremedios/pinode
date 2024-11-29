@@ -14,7 +14,7 @@ namespace pinode {
         //
         // This should cause us to cycle between our high temp and low temp
         // point.
-        if (temp > (m_temperature + (m_temperatureThreshold // 2))) {
+        if (temp > (m_temperature + (m_temperatureThreshold / 2))) {
             DEBUG_MSG("Turning off heater: Setpoint[" << std::to_string(m_temperature) << "] Current: [" << temp << "]");
             m_heaterControl->Off();
         }
