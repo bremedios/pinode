@@ -11,6 +11,7 @@
 #endif
 
 int main (int argc, char** argv) {
+    std::cout << "Pi Heater v0.01" << std::endl;
 
     if (argc != 1) {
         std::string cmd (argv[1]);
@@ -33,7 +34,7 @@ int main (int argc, char** argv) {
         return 0;
     }
 
-    bpl::sys::Tick tick(std::chrono::milliseconds(1000));
+    bpl::sys::Tick              tick(std::chrono::milliseconds(1000));
     pinode::HeaterController    controller;
     pinode::ClientPtr           client = std::make_shared<pinode::Client>();
 
@@ -42,7 +43,7 @@ int main (int argc, char** argv) {
     pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
 #else
     pinode::HeaterControlHwStub*   controlHwStub = new pinode::HeaterControlHwStub();
-    pinode::HeaterControlHwPtr      controlPtr    = pinode::HeaterControlHwPtr(controlHwStub);
+    pinode::HeaterControlHwPtr     controlPtr    = pinode::HeaterControlHwPtr(controlHwStub);
 #endif
 
     if (!client->Connect("192.168.1.215", 9999))
@@ -59,7 +60,7 @@ int main (int argc, char** argv) {
     controller.setHeaterControl(controlPtr);
     controller.setPinodeClient(client);
     controller.setThreshold(0.5f);
-    controller.setTemperature(20.0f);
+    controller.setTemperature(20.5f);
 
     while (true) {
         if(!controller.Update()) {
