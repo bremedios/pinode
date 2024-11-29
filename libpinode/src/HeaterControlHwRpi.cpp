@@ -13,6 +13,7 @@
 namespace pinode {
 
     void HeaterControlHwRpi::HeaterControlHwRpi() {
+        DEBUG_MSG("Enablilng Raspberry Pi HeaterControl");
         if (0 > wiringPiSetup()) {
           ERROR_MSG("wiringPiSetup failed");
 

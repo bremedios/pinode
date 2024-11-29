@@ -10,7 +10,29 @@
     #include "pinode/HeaterControlHwStub.h"
 #endif
 
-int main () {
+int main (int argc, char** argv) {
+
+    if (argc != 1) {
+        std::string cmd (argv[1]);
+
+        if (cmd == "on") {
+#if defined(ENABLE_HW_RPI)
+            pinode::HeaterControlHwRpi* controlHwRpi  = new pinode::HeaterControlHwRpi();
+            pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
+            controlPtr->On();
+#endif
+            std::cout <<  "Turning on heater" << std::endl;
+        } else if (cmd == "off") {
+#if defined(ENABLE_HW_RPI)
+            pinode::HeaterControlHwRpi* controlHwRpi  = new pinode::HeaterControlHwRpi();
+            pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
+            controlPtr->Off();
+#endif
+        }
+            std::cout <<  "Turning off heater" << std::endl;
+        return 0;
+    }
+
     bpl::sys::Tick tick(std::chrono::milliseconds(1000));
     pinode::HeaterController    controller;
     pinode::ClientPtr           client = std::make_shared<pinode::Client>();
@@ -23,7 +45,7 @@ int main () {
     pinode::HeaterControlHwPtr      controlPtr    = pinode::HeaterControlHwPtr(controlHwStub);
 #endif
 
-    if (!client->Connect("127.0.0.1", 9999))
+    if (!client->Connect("192.168.1.215", 9999))
     {
         std::cerr << "    ERROR: Failed to connect to pinode temperature sensor node" << std::endl;
         return -1;

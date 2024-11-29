@@ -13,7 +13,7 @@ work-in-progress.  Keep an eye on the project for a release that does allow for 
 # Hardware Setup
 This is how the hardware pin-out is configured in code.  This is currently not configurable.
 
-| Module                           | Pin          | Description                |
-|----------------------------------|--------------|----------------------------|
-| Pi Node Temperature Sensor       | 7 (GPIO 4)   | DHT22 / DHT11 sensor input |
-| Pi Heater | 11 (GPIO 17) | Heater Enable / Disable    |
+| Module                           | Pin         | Description                |
+|----------------------------------|-------------|----------------------------|
+| Pi Node Temperature Sensor       | 7 (GPIO 4)  | DHT22 / DHT11 sensor input |
+| Pi Heater | 11 (GPIO 0) | Heater Enable / Disable    |

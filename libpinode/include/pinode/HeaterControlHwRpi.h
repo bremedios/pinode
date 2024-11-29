@@ -15,7 +15,7 @@ namespace pinode {
         void On() override;
         void Off() override;
     private:
-        int m_pin=11;
+        int m_pin=0;
     }; // class HeaterControlHwRpi
 }; // namespace pinode
 
