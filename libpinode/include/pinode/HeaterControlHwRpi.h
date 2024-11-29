@@ -10,7 +10,7 @@ namespace pinode {
     class HeaterControlHwRpi : public HeaterControlHw {
     public:
         HeaterControlHwRpi();
-        ~HeaterControlHwRpi() override;
+        ~HeaterControlHwRpi() override=default;
 
         void On() override;
         void Off() override;

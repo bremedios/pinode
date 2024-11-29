@@ -1,9 +1,6 @@
 //
 // Created by Bradley Remedios on 11/28/24.
 //
-#ifndef PINODE_HEATERCONTROL_HW_RPI_H
-#define PINODE_HEATERCONTROL_HW_RPI_H
-
 #include <wiringPi.h>
 
 #include <pinode/HeaterControlHwRpi.h>
@@ -12,18 +9,15 @@
 
 namespace pinode {
 
-    void HeaterControlHwRpi::HeaterControlHwRpi() {
+    HeaterControlHwRpi::HeaterControlHwRpi() {
         DEBUG_MSG("Enablilng Raspberry Pi HeaterControl");
         if (0 > wiringPiSetup()) {
           ERROR_MSG("wiringPiSetup failed");
-
-          return false;
         }
 
         if (setuid(getuid()) < 0)
         {
           ERROR_MSG("setuid() failed");
-          return false;
         }
 
         //
@@ -36,7 +30,6 @@ namespace pinode {
         DEBUG_MSG("Turning Heater On");
         pinMode(m_pin, OUTPUT);
         digitalWrite(m_pin, HIGH);
-        std::cout <<
     }// On
 
     void HeaterControlHwRpi::Off() {
@@ -46,4 +39,3 @@ namespace pinode {
     }// Off
 }; // namespace pinode
 
-#endif // PINODE_HEATERCONTROL_HW_RPI_H

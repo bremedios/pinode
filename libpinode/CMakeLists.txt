@@ -26,8 +26,8 @@ set(CORE_SOURCE_FILES src/Server.cpp
         src/HeaterController.cpp)
 
 if(EXISTS "/usr/local/include/wiringPi.h")
-    set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -DENABLE_HW_RPI)
-    set(SOURCE_FILES ${CORE_SOURCE_FILES})
+    set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} -DENABLE_HW_RPI)
+    set(SOURCE_FILES ${CORE_SOURCE_FILES} src/HeaterControlHwRpi.cpp)
 else()
     set(SOURCE_FILES ${CORE_SOURCE_FILES})
 endif()

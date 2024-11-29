@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(../libpinode/include)
 
 if(EXISTS "/usr/local/include/wiringPi.h")
-    set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -DENABLE_HW_RPI)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -DENABLE_HW_RPI)
 endif()
 
 add_executable(piheater src/main.cpp)
