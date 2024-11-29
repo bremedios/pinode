@@ -6,14 +6,14 @@
 
 #include <iostream>
 
-#define __ENABLE_NET_DEBUG    1
+//#define __ENABLE_PINODE_DEBUG    1
 
 #define ERROR_MSG(msg)  { std::cerr << __PRETTY_FUNCTION__ << ":" << msg << std::endl; }
 
-#if defined(__ENABLE_NET_DEBUG)
+#if defined(__ENABLE_PINODE_DEBUG)
     #define DEBUG_MSG(msg)  { std::cout << __PRETTY_FUNCTION__ << ":" << msg << std::endl; }
 #else
     #define DEBUG_MSG(cmd)
-#endif // __ENABLE_NET_DEBUG
+#endif // __ENABLE_PINODE_DEBUG
 
 #endif //DEBUG_H

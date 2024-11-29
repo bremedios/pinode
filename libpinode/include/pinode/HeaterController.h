@@ -24,8 +24,8 @@ namespace pinode {
     private:
         ClientPtr          m_client;
         HeaterControlHwPtr m_heaterControl;
-        float              m_temperature=19.5;
-        float              m_temperatureThreshold=1;
+        float              m_temperature=20.5;
+        float              m_temperatureThreshold=0.5f;
     }; // class HeaterController
 }; // pinode
 

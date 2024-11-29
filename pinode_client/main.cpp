@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include <bpl/sys/Tick.h>
+#include <bpl/storage/Json.h>
+
 #include "pinode/Client.h"
 
 std::string version = "v0.01";
@@ -35,13 +37,27 @@ void PrintSensors_() {
     }
 } // PrintSensors_
 
+#if 0
+void LoadClients_() {
+    auto doc = bpl::storage::Json::Open("~/.pinode/client.json");
+
+    std::list<std::string> strings;
+
+    if (!bpl::storage::Json::Load(doc["nodes"], strings)) {
+        std::cerr << "    ERROR: Failed to load devices from configuration" << std::endl;
+        return;
+    }
+} // LoadClients_
+#endif
+
 int main(void) {
     pinode::Client    client;
 
+    ///LoadDevices_();
     // for now we hardcode our device list.  We should read this from a file and eventually discover
 
-    //deviceIps.emplace_back("127.0.0.1");
     deviceIps.emplace_back("192.168.1.215");
+    deviceIps.emplace_back("192.168.1.216");
 
     // initialize all clients
     for ( auto it : deviceIps) {
