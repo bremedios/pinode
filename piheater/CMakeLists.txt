@@ -17,3 +17,5 @@ if(EXISTS "/usr/local/lib/libwiringPi.so")
 else()
     target_link_libraries(piheater PRIVATE pinode bpl_net bpl_sys)
 endif()
+
+install(PROGRAMS piheater DESTINATION bin)
