@@ -16,6 +16,11 @@ namespace pinode {
         : m_monitorPeriod(5000) {
     }
 
+    Client::~Client() {
+        Terminate();
+        WaitForTermination();
+    }
+
     bool Client::Connect(const std::string& host, unsigned short port) {
         m_name = host + ":" + std::to_string(port);
 
@@ -46,6 +51,7 @@ namespace pinode {
     } // Start
 
     void Client::Terminate() {
+        DEBUG_MSG("Termination requested.");
         m_terminate = true;
     } // Terminate
 
@@ -53,12 +59,14 @@ namespace pinode {
         Terminate();
 
         if (nullptr != m_monitorThread.get()) {
+            DEBUG_MSG("Waiting for termination of monitor thread");
             m_monitorThread->join();
 
             m_monitorThread.reset();
         }
 
         if (nullptr != m_receiverThread.get()) {
+            DEBUG_MSG("Waiting for termination of receiver thread");
             m_receiverThread->join();
 
             m_receiverThread.reset();
@@ -112,6 +120,8 @@ namespace pinode {
 
             ERROR_MSG("Unknown packet received");
         }
+
+        DEBUG_MSG("Receiver thread terminating...");
     } // ReceiverSvc_
 
     void Client::MonitorSvc_() {
@@ -139,6 +149,7 @@ namespace pinode {
 
             bpl::net::PacketCache::getInstance().Push(packet);
         }
+        DEBUG_MSG("Monitor thread terminating...");
     } // MonitorSvc_
 
 }; // namespace pinode

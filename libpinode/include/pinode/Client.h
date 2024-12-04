@@ -15,7 +15,7 @@ namespace pinode {
     class Client {
     public:
         Client();
-        ~Client() = default;
+        ~Client();
 
         bool Start();
 
