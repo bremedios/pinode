@@ -18,4 +18,4 @@ else()
     target_link_libraries(piheater PRIVATE pinode bpl_net bpl_sys)
 endif()
 
-install(PROGRAMS piheater DESTINATION bin)
+install(TARGETS piheater DESTINATION bin)

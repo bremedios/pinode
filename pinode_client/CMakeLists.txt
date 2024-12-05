@@ -9,3 +9,4 @@ include_directories(../libpinode/include)
 add_executable(pinode_client main.cpp)
 
 target_link_libraries(pinode_client PRIVATE pinode bpl_net bpl_sys)
+install(TARGETS pinode_client DESTINATION bin)

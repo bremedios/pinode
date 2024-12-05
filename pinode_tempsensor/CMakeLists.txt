@@ -10,4 +10,4 @@ add_executable(pinode_tempsensor main.cpp)
 
 target_link_libraries(pinode_tempsensor PRIVATE pinode devices_dht22 bpl_net)
 
-install(PROGRAMS pinode_tempsensor DESTINATION bin)
+install(TARGETS pinode_tempsensor DESTINATION bin)
