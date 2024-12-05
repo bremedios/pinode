@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-include_directories(include)
+include_directories(include ../../libbpl_net/libbpl_net/include)
 
 set(PUBLIC_HEADER include/pinode/PacketOpGetTemperature.h
         include/pinode/PacketOps.h
