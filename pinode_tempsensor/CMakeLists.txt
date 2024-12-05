@@ -4,7 +4,7 @@ project(pinode_tempsensor)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(../libpinode/include)
+include_directories(../libpinode/include ../../libbpl_net/libbpl_net/include)
 
 add_executable(pinode_tempsensor main.cpp)
 
