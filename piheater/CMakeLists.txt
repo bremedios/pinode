@@ -4,7 +4,7 @@ project(piheater)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(../libpinode/include ../../libbpl_net/libbpl_net/include)
+include_directories(../libpinode/include ../../libbpl_net/libbpl_net/include ../../libbpl_sys/libbpl_sys/include)
 
 if(EXISTS "/usr/local/include/wiringPi.h")
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -DENABLE_HW_RPI)
