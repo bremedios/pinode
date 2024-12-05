@@ -34,6 +34,8 @@ endif()
 
 add_library(pinode SHARED ${SOURCE_FILES} ${PUBLIC_HEADER})
 
+#target_link_directories(pinode PRIVATE "../../cmake-build-debug/libdevices_dht22/libdevices_dht22")
+
 if(EXISTS "/usr/local/lib/libwiringPi.so")
     target_link_libraries(pinode PRIVATE bpl_net devices_dht22 bpl_sys wiringPi)
 else()
