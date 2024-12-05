@@ -4,7 +4,7 @@ project(pinode_client)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(../libpinode/include ../../libbpl_sys/libbpl_sys/include ../../libbpl_storage/libbpl_storage/include)
+include_directories(../libpinode/include ../../libbpl_sys/libbpl_sys/include ../../libbpl_storage/libbpl_storage/include ../../libbpl_net/libbpl_net/include)
 
 add_executable(pinode_client main.cpp)
 
