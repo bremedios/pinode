@@ -10,6 +10,7 @@
 
 #include "pinode/Server.h"
 #include "pinode/PacketOpGetTemperature.h"
+#include "pinode/PacketOpGetHumidity.h"
 
 #include "Debug.h"
 
@@ -91,6 +92,7 @@ namespace pinode {
 
         // add packet handlers to the packet processor
         m_packetProcessor.AddPacketOp(PacketOpGetTemperature::packetOpCreate(m_udp, m_temperatureMonitor));
+        m_packetProcessor.AddPacketOp(PacketOpGetHumidity::packetOpCreate(m_udp, m_temperatureMonitor));
 
         return true;
     } // Start
