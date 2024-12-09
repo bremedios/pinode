@@ -20,6 +20,7 @@ set(PUBLIC_HEADER include/pinode/PacketOpGetTemperature.h
 set(HEADER_FILES src/Debug.h)
 set(CORE_SOURCE_FILES src/Server.cpp
         src/PacketOpGetTemperature.cpp
+        src/PacketOpGetHumidity.cpp
         src/TemperatureMonitor.cpp
         src/Client.cpp
         src/HeaterControlHwStub.cpp
