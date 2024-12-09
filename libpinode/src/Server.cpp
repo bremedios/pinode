@@ -63,6 +63,12 @@ namespace pinode {
     }
 
     bool Server::Start() {
+        if (!LoadConfig_()) {
+	    ERROR_MSG("LoadConfig_() failed");
+
+	    return false;
+        }
+
         m_udp = std::make_shared<bpl::net::Udp>();
 
         DEBUG_MSG("Binding to UDP Port " << m_port);
