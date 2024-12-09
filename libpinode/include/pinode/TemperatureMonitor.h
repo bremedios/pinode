@@ -21,6 +21,7 @@ namespace pinode {
 
         float getTemperature() { return m_temperature; }
         float getHumidity() { return m_humidity; }
+        void setRefreshInterval(const std::chrono::milliseconds& ms) { m_refreshInterval = std::min(std::chrono::milliseconds(2000), ms);};
     private:
         void svc_();
 

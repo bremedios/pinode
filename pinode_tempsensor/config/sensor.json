@@ -1,0 +1,7 @@
+{
+    "location":  "<No Location Set>",
+    "enable-temperature" : true,
+    "enable-humidity" : true,
+    "port" : 9999,
+    "refresh-interval": 2500
+}

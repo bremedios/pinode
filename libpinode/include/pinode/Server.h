@@ -32,14 +32,18 @@ namespace pinode {
         // NOTE: call this directly for now as we only need 1 thread.
         void Svc_();
     private:
-        uint16_t 					m_port=9999;
-        bool                         m_terminate = false;
-        bpl::net::UdpPtr                m_udp;
+        bool LoadConfig_();
+
+        std::chrono::milliseconds    m_refreshInterval;
+        bool                         m_enableTemperature = true;
+        bool                         m_enableHumidity    = true;
+        uint16_t 					 m_port              = 9999;
+        bool                         m_terminate        = false;
+        std::string                  m_location = "<No Location Set>";
+        bpl::net::UdpPtr             m_udp;
         bpl::net::UdpPacketProcessor m_packetProcessor;
 
         pinode::TemperatureMonitorPtr     m_temperatureMonitor;
-        bool m_enableTemperature = false;
-        bool m_enableHumidity = false;
     };
 }; // namespace
 

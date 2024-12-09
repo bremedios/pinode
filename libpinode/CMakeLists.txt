@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-include_directories(include ../../libbpl_net/libbpl_net/include ../../libbpl_sys/libbpl_sys/include ../../libdevices_dht22/libdht22/include)
+include_directories(include ../../libbpl_net/libbpl_net/include ../../libbpl_sys/libbpl_sys/include ../../libdevices_dht22/libdht22/include ../../libbpl_storage/libbpl_storage/include)
 
 set(PUBLIC_HEADER include/pinode/PacketOpGetTemperature.h
         include/pinode/PacketOps.h
@@ -35,9 +35,9 @@ endif()
 add_library(pinode SHARED ${SOURCE_FILES} ${PUBLIC_HEADER})
 
 if(EXISTS "/usr/local/lib/libwiringPi.so")
-    target_link_libraries(pinode PRIVATE bpl_net devices_dht22 bpl_sys wiringPi)
+    target_link_libraries(pinode PRIVATE bpl_net devices_dht22 bpl_sys bpl_storage wiringPi)
 else()
-    target_link_libraries(pinode PRIVATE bpl_net devices_dht22 bpl_sys)
+    target_link_libraries(pinode PRIVATE bpl_net devices_dht22 bpl_sys bpl_storage)
 endif()
 
 install(TARGETS pinode DESTINATION lib)

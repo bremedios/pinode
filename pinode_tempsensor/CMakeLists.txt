@@ -11,3 +11,4 @@ add_executable(pinode_tempsensor main.cpp)
 target_link_libraries(pinode_tempsensor PRIVATE pinode devices_dht22 bpl_net)
 
 install(TARGETS pinode_tempsensor DESTINATION bin)
+install(FILES config/sensor.json DESTINATION /etc/pinode/sensor.json)

@@ -2,7 +2,10 @@
 // Created by Bradley Remedios on 11/25/24.
 //
 
+#include <bpl/sys/Path.h>
+#include <bpl/storage/Json.h>
 #include <bpl/net/Packet.h>
+
 #include <bpl/net/PacketCache.h>
 
 #include "pinode/Server.h"
@@ -85,6 +88,58 @@ namespace pinode {
 
         return true;
     } // Start
+
+
+    bool Server::LoadConfig_() {
+        std::list<std::filesystem::path> paths;
+
+        paths.emplace_back("pinode-sensor.json");
+        paths.emplace_back("/etc/pinode/sensor.json");
+
+        std::string path = bpl::sys::Path::getFilenameFromList(paths);
+
+        if (path.empty()) {
+            ERROR_MSG("Could not find server configuration, using defaults");
+
+            return false;
+        }
+
+        auto json = bpl::storage::Json::Open(path);
+
+        int port;
+
+        if (bpl::storage::Json::Load(json->GetObject(), "port", port)) {
+            m_port = port;
+        }
+
+        if (!bpl::storage::Json::Load(json->GetObject(), "enable-temperature", m_enableTemperature)) {
+            ERROR_MSG("Cannot read temperature enable, using default");
+        }
+
+        if (!bpl::storage::Json::Load(json->GetObject(), "enable-humidity", m_enableHumidity)) {
+            ERROR_MSG("Cannot read temperature enable, using default");
+        }
+
+        int refreshInterval = 0;
+
+        if (bpl::storage::Json::Load(json->GetObject(), "refresh-interval", refreshInterval)) {
+            m_refreshInterval = std::chrono::milliseconds(refreshInterval);
+
+            m_temperatureMonitor->setRefreshInterval(m_refreshInterval);
+        }
+
+        if (!bpl::storage::Json::Load(json->GetObject(), "location", m_location)) {
+            ERROR_MSG("Cannot read location, using default");
+        }
+
+        DEBUG_MSG("Location:              " << m_location);
+        DEBUG_MSG("Port:                  " << m_port);
+        DEBUG_MSG("Temperature Enabled:   " << m_enableTemperature);
+        DEBUG_MSG("Humidity Enabled:      " << m_enableHumidity);
+        DEBUG_MSG("Refresh interval (ms): " << m_refreshInterval.count());
+
+        return true;
+    } // LoadConfig
 
     void Server::Terminate() {ERROR_MSG("Not implemented");}
 
