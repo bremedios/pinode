@@ -40,5 +40,16 @@ namespace pinode {
         uint16_t len;
         int32_t temperature;
     };
+
+    struct PacketGetHumidity {
+        uint16_t type;
+        uint16_t len;
+    };
+
+    struct PacketHumidity {
+        uint16_t type;
+        uint16_t len;
+        int32_t humidity;
+    };
 }; // namespace pinode
 #endif //PINODE_PACKETOPS_H_
