@@ -2,6 +2,7 @@
 // Created by Bradley Remedios on 12/09/24.
 //
 #include <iostream>
+#include <chrono>
 
 #include <fmt/format.h>
 
@@ -28,6 +29,20 @@ void Log_() {
         std::cout << "        Temperature: " << it->getTemperature() << std::endl;
     }
 } // PrintSensors_
+
+std::string GetTimestamp_() {
+    // C++20
+    //    Not yet implemented in all toolchains, so this will not yet work on all platforms
+    // auto start = std::chrono::zoned_time{std::chrono::current_zone(),std::chrono::system_clock::now()};
+
+    std::time_t t = std::time(0);
+
+    std::tm* tm = std::localtime(&t);
+
+    std::string now = std::format("{}-{}-{} {}:{}:{}", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    //auto start = date::make_zoned(std::chrono::current_zone(),std::chrono::system_clock::now());
+    return now;
+} // GetTimestamp_
 
 int main(void) {
     std::cout << "PiNode Logger" << std::endl;
@@ -59,14 +74,7 @@ int main(void) {
         clientMap[it] = client;
     }
 
-    auto start = std::chrono::zoned_time{std::chrono::current_zone(),std::chrono::system_clock::now()};
-
-    //std::string logFile = fmt::format("{}-sensor.csv", std::to_string(start));
-    std::stringstream ss;
-
-    ss << start << "-sensor.csv";
-
-    std::string logFile = ss.str();
+    std::string logFile = GetTimestamp_() + "-sensor.csv";
 
     std::ofstream csvFile = std::ofstream(logFile);
 
@@ -97,7 +105,7 @@ int main(void) {
     std::cout << "Starting CSV Logging" << std::endl;
 
     for (;;) {
-        csvFile << std::chrono::zoned_time{std::chrono::current_zone(),std::chrono::system_clock::now()};
+        csvFile << GetTimestamp_();
 
         for (auto device : devices) {
             csvFile << fmt::format(",{:.2f}", clientMap[device]->getTemperature());
