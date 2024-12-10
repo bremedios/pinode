@@ -11,6 +11,7 @@
 #include "pinode/Server.h"
 #include "pinode/PacketOpGetTemperature.h"
 #include "pinode/PacketOpGetHumidity.h"
+#include "pinode/PacketOpGetSensorInfo.h"
 
 #include "Debug.h"
 
@@ -64,6 +65,8 @@ namespace pinode {
     }
 
     bool Server::Start() {
+        m_sensorInfo = std::make_shared<pinode::SensorInfo>();
+
         if (!LoadConfig_()) {
 	    ERROR_MSG("LoadConfig_() failed");
 
@@ -95,6 +98,7 @@ namespace pinode {
         // add packet handlers to the packet processor
         m_packetProcessor.AddPacketOp(PacketOpGetTemperature::packetOpCreate(m_udp, m_temperatureMonitor));
         m_packetProcessor.AddPacketOp(PacketOpGetHumidity::packetOpCreate(m_udp, m_temperatureMonitor));
+        m_packetProcessor.AddPacketOp(PacketOpGetSensorInfo::packetOpCreate(m_udp, m_sensorInfo));
 
         return true;
     } // Start
@@ -141,6 +145,10 @@ namespace pinode {
         if (!bpl::storage::Json::Load(value, "location", m_location)) {
             ERROR_MSG("Cannot read location, using default");
         }
+
+        m_sensorInfo->setLocation(m_location);
+        m_sensorInfo->setHasHumiditySensor(m_enableHumidity);
+        m_sensorInfo->setHasTemperatureSensor(m_enableTemperature);
 
         DEBUG_MSG("Location:              " << m_location);
         DEBUG_MSG("Port:                  " << m_port);

@@ -10,6 +10,7 @@
 #include <bpl/net/AddrInfo.h>
 
 #include <pinode/TemperatureMonitor.h>
+#include <pinode/SensorInfo.h>
 
 namespace pinode {
     class Server{
@@ -34,6 +35,7 @@ namespace pinode {
     private:
         bool LoadConfig_();
 
+        pinode::SensorInfoPtr        m_sensorInfo;
         std::chrono::milliseconds    m_refreshInterval;
         bool                         m_enableTemperature = true;
         bool                         m_enableHumidity    = true;

@@ -23,9 +23,11 @@ namespace pinode {
 
         bool Connect(const std::string& host, unsigned short port);
 
+        bool hasTemperature() const { return m_hasTemperature; }
         float getTemperature() const {return m_temperature; }
         std::chrono::time_point<std::chrono::steady_clock> getTemperatureTimestamp() const { return m_temperatureTimeStamp; };
 
+        bool hasHumidity() const { return m_hasHumidity; }
         float getHumidity() const {return m_humidity; }
         std::chrono::time_point<std::chrono::steady_clock> getHumidityTimestamp() const { return m_humidityTimeStamp; };
 
@@ -40,11 +42,16 @@ namespace pinode {
 
         void SendGetTemperaturePacket_();
         void SendGetHumidityPacket_();
+        void SendGetSensorInfo_();
         bool HandleTemperaturePacket_(bpl::net::PacketPtr packet);
         bool HandleHumidityPacket_(bpl::net::PacketPtr packet);
+        bool HandleSensorInfoPacket_(bpl::net::PacketPtr packet);
 
         bool m_terminate = false;
         std::string m_name;
+        bool m_hasTemperature = false;
+        bool m_hasHumidity = false;
+
         float                                                 m_temperature=0;
         float                                                 m_humidity=0;
         std::chrono::time_point<std::chrono::steady_clock>   m_temperatureTimeStamp;

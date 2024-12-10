@@ -53,6 +53,8 @@ namespace pinode {
     void Client::Terminate() {
         DEBUG_MSG("Termination requested.");
         m_terminate = true;
+
+        m_udp.Close();
     } // Terminate
 
     void Client::WaitForTermination() {
@@ -131,6 +133,38 @@ namespace pinode {
         return true;
     } // HandleHumidityPacket_
 
+bool Client::HandleSensorInfoPacket_(bpl::net::PacketPtr packet) {
+        PacketSensorInfo* pkt = static_cast<PacketSensorInfo*>(packet->getPacketData());
+
+        if (sizeof(PacketSensorInfo) != packet->getPacketSize()) {
+            DEBUG_MSG("Packet type incorrect size");
+
+            return false;
+        }
+
+        if (PacketOpType::PacketOp_SENSOR_INFO != ntohs(pkt->type)) {
+            DEBUG_MSG("Packet type not Sensor Info");
+
+            return false;
+        }
+
+        // final check for size, this should always be correct as long as we are not corrupt.
+        if (sizeof(PacketSensorInfo) != ntohs(pkt->len)) {
+            DEBUG_MSG("Packet has incorrect size encoded");
+
+            return false;
+        }
+
+        // force null terminate in case it was not already
+        pkt->location[sizeof(pkt->location) - 1] = '\0';
+
+        m_name = std::string(pkt->location);
+        m_hasTemperature = pkt->temperatureSensor;
+        m_hasHumidity = pkt->humiditySensor;
+
+        return true;
+    } // HandleHumidityPacket_
+
     void Client::ReceiverSvc_() {
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
 
@@ -149,6 +183,11 @@ namespace pinode {
 
             if (HandleHumidityPacket_(packet)) {
                 DEBUG_MSG("Received temperature packet");
+                continue;
+            }
+
+            if (HandleSensorInfoPacket_(packet)) {
+                DEBUG_MSG("Received sensor Info packet");
                 continue;
             }
 
@@ -196,6 +235,25 @@ namespace pinode {
         bpl::net::PacketCache::getInstance().Push(packet);
     } // SendGetTemperaturePacket_
 
+void Client::SendGetSensorInfo_() {
+        bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
+
+        PacketGetSensorInfo* pkt = static_cast<PacketGetSensorInfo*>(packet->getPacketData());
+
+        pkt->type = htons(pinode::PacketOpType::PacketOp_GET_SENSOR_INFO);
+        pkt->len = htons(sizeof(PacketGetSensorInfo));
+
+        packet->setPacketDataSize(sizeof(PacketGetSensorInfo));
+
+        DEBUG_MSG("Sending Packet of " << sizeof(PacketGetSensorInfo) << " bytes");
+
+        if (!m_udp.Send(packet, m_addr)) {
+            ERROR_MSG("Failed to send packet");
+        }
+
+        bpl::net::PacketCache::getInstance().Push(packet);
+    } // SendGetSensorInfo_
+
     void Client::MonitorSvc_() {
         bpl::sys::Tick tick(m_monitorPeriod);
 
@@ -204,8 +262,17 @@ namespace pinode {
             // Wait until our next monitor period
             tick.Wait();
 
-            SendGetTemperaturePacket_();
-            SendGetHumidityPacket_();
+            if (m_terminate) {
+                break;
+            }
+
+            if (m_hasTemperature)
+                SendGetTemperaturePacket_();
+
+            if (m_hasHumidity)
+                SendGetHumidityPacket_();
+
+            SendGetSensorInfo_();
         }
         DEBUG_MSG("Monitor thread terminating...");
     } // MonitorSvc_
