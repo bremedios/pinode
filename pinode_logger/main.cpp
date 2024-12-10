@@ -39,7 +39,7 @@ std::string GetTimestamp_() {
 
     std::tm* tm = std::localtime(&t);
 
-    std::string now = std::format("{}-{}-{} {}:{}:{}", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    std::string now = fmt::format("{}-{}-{} {}:{}:{}", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
     //auto start = date::make_zoned(std::chrono::current_zone(),std::chrono::system_clock::now());
     return now;
 } // GetTimestamp_
