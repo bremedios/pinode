@@ -83,6 +83,10 @@ namespace pinode {
             return false;
         }
 
+        return true;
+    } // Start
+
+    bool Server::EnableSensor() {
         if (m_temperatureMonitor.get() == nullptr) {
             m_temperatureMonitor = std::make_shared<TemperatureMonitor>();
 
@@ -101,8 +105,7 @@ namespace pinode {
         m_packetProcessor.AddPacketOp(PacketOpGetSensorInfo::packetOpCreate(m_udp, m_sensorInfo));
 
         return true;
-    } // Start
-
+    } // EnableSensor
 
     bool Server::LoadConfig_() {
         std::list<std::filesystem::path> paths;

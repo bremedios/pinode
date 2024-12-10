@@ -1,50 +1,45 @@
 //
 // Created by Bradley Remedios on 11/28/24.
 //
-#include "pinode/HeaterController.h"
+#include <iostream>
+
 #include <bpl/sys/Tick.h>
 
-#if defined(ENABLE_HW_RPI)
-    #include "pinode/HeaterControlHwRpi.h"
-#else
-    #include "pinode/HeaterControlHwStub.h"
-#endif
+#include <pinode/HeaterControlFactory.h>
+#include <pinode/Client.h>
+#include <pinode/HeaterController.h>
+
+void Usage_() {
+    std::cerr << "Usage:" << std::endl;
+} // Usage_
 
 int main (int argc, char** argv) {
     std::cout << "Pi Heater v0.01" << std::endl;
+
+    auto controlPtr = pinode::HeaterControlFactory::getHeaterControl();
 
     if (argc != 1) {
         std::string cmd (argv[1]);
 
         if (cmd == "on") {
-#if defined(ENABLE_HW_RPI)
-            pinode::HeaterControlHwRpi* controlHwRpi  = new pinode::HeaterControlHwRpi();
-            pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
             controlPtr->On();
-#endif
             std::cout <<  "Turning on heater" << std::endl;
+            return 0;
         } else if (cmd == "off") {
-#if defined(ENABLE_HW_RPI)
-            pinode::HeaterControlHwRpi* controlHwRpi  = new pinode::HeaterControlHwRpi();
-            pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
             controlPtr->Off();
-#endif
-        }
             std::cout <<  "Turning off heater" << std::endl;
-        return 0;
+            return 0;
+        }
+        else {
+            Usage_();
+
+            return -1;
+        }
     }
 
     bpl::sys::Tick              tick(std::chrono::milliseconds(1000));
     pinode::HeaterController    controller;
     pinode::ClientPtr           client = std::make_shared<pinode::Client>();
-
-#if defined(ENABLE_HW_RPI)
-    pinode::HeaterControlHwRpi* controlHwRpi  = new pinode::HeaterControlHwRpi();
-    pinode::HeaterControlHwPtr  controlPtr    = pinode::HeaterControlHwPtr(controlHwRpi);
-#else
-    pinode::HeaterControlHwStub*   controlHwStub = new pinode::HeaterControlHwStub();
-    pinode::HeaterControlHwPtr     controlPtr    = pinode::HeaterControlHwPtr(controlHwStub);
-#endif
 
     if (!client->Connect("192.168.1.215", 9999))
     {

@@ -26,6 +26,8 @@ namespace pinode {
 
         bool Start();
 
+        bool EnableSensor();
+
         void Terminate();
 
         void WaitForTermination();
