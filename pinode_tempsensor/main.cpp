@@ -16,6 +16,12 @@ int main(void) {
         return -1;
     }
 
+    if (!server.EnableSensor()) {
+        std::cout << "    ERROR: Failed to enable sensor component in server" << std::endl;
+
+        return -1;
+    }
+
     server.Svc_();
 
     return 0;
