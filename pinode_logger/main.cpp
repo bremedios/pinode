@@ -59,7 +59,7 @@ int main(void) {
         clientMap[it] = client;
     }
 
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+    auto start = std::chrono::zoned_time{std::chrono::current_zone(),std::chrono::system_clock::now()};
 
     //std::string logFile = fmt::format("{}-sensor.csv", std::to_string(start));
     std::stringstream ss;
@@ -97,7 +97,7 @@ int main(void) {
     std::cout << "Starting CSV Logging" << std::endl;
 
     for (;;) {
-        csvFile << std::chrono::system_clock::now();
+        csvFile << std::chrono::zoned_time{std::chrono::current_zone(),std::chrono::system_clock::now()};
 
         for (auto device : devices) {
             csvFile << fmt::format(",{:.2f}", clientMap[device]->getTemperature());
