@@ -90,6 +90,8 @@ namespace pinode {
             }
         }
 
+        m_temperatureMonitor->setRefreshInterval(m_refreshInterval);
+
         // add packet handlers to the packet processor
         m_packetProcessor.AddPacketOp(PacketOpGetTemperature::packetOpCreate(m_udp, m_temperatureMonitor));
         m_packetProcessor.AddPacketOp(PacketOpGetHumidity::packetOpCreate(m_udp, m_temperatureMonitor));
@@ -116,27 +118,27 @@ namespace pinode {
 
         int port;
 
-        if (bpl::storage::Json::Load(json->GetObject(), "port", port)) {
+        const rapidjson::Value  value = json->GetObject();
+
+        if (bpl::storage::Json::Load(value, "port", port)) {
             m_port = port;
         }
 
-        if (!bpl::storage::Json::Load(json->GetObject(), "enable-temperature", m_enableTemperature)) {
+        if (!bpl::storage::Json::Load(value, "enable-temperature", m_enableTemperature)) {
             ERROR_MSG("Cannot read temperature enable, using default");
         }
 
-        if (!bpl::storage::Json::Load(json->GetObject(), "enable-humidity", m_enableHumidity)) {
+        if (!bpl::storage::Json::Load(value, "enable-humidity", m_enableHumidity)) {
             ERROR_MSG("Cannot read temperature enable, using default");
         }
 
         int refreshInterval = 0;
 
-        if (bpl::storage::Json::Load(json->GetObject(), "refresh-interval", refreshInterval)) {
+        if (bpl::storage::Json::Load(value, "refresh-interval", refreshInterval)) {
             m_refreshInterval = std::chrono::milliseconds(refreshInterval);
-
-            m_temperatureMonitor->setRefreshInterval(m_refreshInterval);
         }
 
-        if (!bpl::storage::Json::Load(json->GetObject(), "location", m_location)) {
+        if (!bpl::storage::Json::Load(value, "location", m_location)) {
             ERROR_MSG("Cannot read location, using default");
         }
 
