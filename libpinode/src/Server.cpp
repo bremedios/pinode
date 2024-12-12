@@ -29,11 +29,11 @@ namespace pinode {
 
         if (nullptr != m_temperatureMonitor.get()) {
             m_temperatureMonitor->Terminate();
+            m_temperatureMonitor->WaitForTermination();
+
+            m_temperatureMonitor.reset();
         }
 
-        m_temperatureMonitor->WaitForTermination();
-
-        m_temperatureMonitor.reset();
     } // Destroy
 
     void Server::Svc_() {
