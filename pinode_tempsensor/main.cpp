@@ -10,7 +10,13 @@ int main(void) {
 
     pinode::Server    server;
 
-    if (!server.Start()) {
+
+    std::list<std::filesystem::path> paths;
+
+    paths.emplace_back("pinode-sensor.json");
+    paths.emplace_back("/etc/pinode/sensor.json");
+
+    if (!server.Start(paths)) {
         std::cout << "    ERROR: Failed to start server" << std::endl;
 
         return -1;

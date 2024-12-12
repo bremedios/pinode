@@ -24,7 +24,7 @@ namespace pinode {
         void enableTemperature(bool enable) { m_enableTemperature = enable; };
         void enableHumidity(bool enable) { m_enableHumidity = true; };
 
-        bool Start();
+        bool Start(const std::list<std::filesystem::path>& paths);
 
         bool EnableSensor();
 
@@ -35,7 +35,7 @@ namespace pinode {
         // NOTE: call this directly for now as we only need 1 thread.
         void Svc_();
     private:
-        bool LoadConfig_();
+        bool LoadConfig_(const std::list<std::filesystem::path>& paths);
 
         pinode::SensorInfoPtr        m_sensorInfo;
         std::chrono::milliseconds    m_refreshInterval;

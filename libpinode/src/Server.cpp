@@ -64,10 +64,10 @@ namespace pinode {
         }
     }
 
-    bool Server::Start() {
+    bool Server::Start(const std::list<std::filesystem::path>& paths) {
         m_sensorInfo = std::make_shared<pinode::SensorInfo>();
 
-        if (!LoadConfig_()) {
+        if (!LoadConfig_(paths)) {
 	    ERROR_MSG("LoadConfig_() failed");
 
 	    return false;
@@ -107,12 +107,7 @@ namespace pinode {
         return true;
     } // EnableSensor
 
-    bool Server::LoadConfig_() {
-        std::list<std::filesystem::path> paths;
-
-        paths.emplace_back("pinode-sensor.json");
-        paths.emplace_back("/etc/pinode/sensor.json");
-
+    bool Server::LoadConfig_(const std::list<std::filesystem::path>& paths) {
         std::string path = bpl::sys::Path::getFilenameFromList(paths);
 
         if (path.empty()) {
