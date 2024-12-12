@@ -28,5 +28,9 @@ int main(void) {
         return -1;
     }
 
+    // everything is done on the internal server thread so we just wait for it to
+    // terminate.
+    server.WaitForTermination();
+
     return 0;
 } // main

@@ -177,8 +177,6 @@ namespace pinode {
     } // Terminate
 
     void Server::WaitForTermination() {
-        m_terminate = true;
-
         m_serverThread->join();
     } // WaitForTermination
 }; // namespace pinode
