@@ -21,7 +21,9 @@ namespace pinode {
     }
 
     Server::~Server() {
-      	Destroy();
+        Destroy();
+
+        WaitForTermination();
     } // ~Server
 
     void Server::Destroy() {
@@ -170,6 +172,7 @@ namespace pinode {
     } // LoadConfig_
 
     void Server::Terminate() {
+        m_udp->Close();
         m_terminate = true;
     } // Terminate
 
