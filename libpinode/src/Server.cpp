@@ -68,7 +68,7 @@ namespace pinode {
     bool Server::Start(const std::list<std::filesystem::path>& paths) {
         m_sensorInfo = std::make_shared<pinode::SensorInfo>();
 
-        if (!LoadSensorConfig_(paths)) {
+        if (!LoadConfig_(paths)) {
 	        ERROR_MSG("LoadConfig_() failed");
 
 	        return false;
@@ -119,7 +119,7 @@ namespace pinode {
         return true;
     } // EnableHeater
 
-    bool Server::LoadSensorConfig_(const std::list<std::filesystem::path>& paths) {
+    bool Server::LoadConfig_(const std::list<std::filesystem::path>& paths) {
         std::string path = bpl::sys::Path::getFilenameFromList(paths);
 
         if (path.empty()) {
@@ -167,9 +167,15 @@ namespace pinode {
         DEBUG_MSG("Refresh interval (ms): " << m_refreshInterval.count());
 
         return true;
-    } // LoadSensorConfig_
+    } // LoadConfig_
 
-    void Server::Terminate() {ERROR_MSG("Not implemented");}
+    void Server::Terminate() {
+        m_terminate = true;
+    } // Terminate
 
-    void Server::WaitForTermination() {ERROR_MSG("Not implemented");}
+    void Server::WaitForTermination() {
+        m_terminate = true;
+
+        m_serverThread->join();
+    } // WaitForTermination
 }; // namespace pinode

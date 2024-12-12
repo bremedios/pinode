@@ -36,7 +36,7 @@ namespace pinode {
 
     private:
         void Svc_();
-        bool LoadSensorConfig_(const std::list<std::filesystem::path>& paths);
+        bool LoadConfig_(const std::list<std::filesystem::path>& paths);
 
         pinode::SensorInfoPtr        m_sensorInfo;
         std::chrono::milliseconds    m_refreshInterval;
