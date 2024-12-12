@@ -26,7 +26,9 @@ set(CORE_SOURCE_FILES src/Server.cpp
         src/Client.cpp
         src/HeaterControlHwStub.cpp
         src/HeaterController.cpp
-        src/HeaterControlFactory.cpp)
+        src/HeaterControlFactory.cpp
+        src/HeaterStatus.cpp
+        src/PacketOpGetHeaterStatus.cpp)
 
 if(EXISTS "/usr/local/include/wiringPi.h")
     set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} -DENABLE_HW_RPI)

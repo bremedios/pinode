@@ -10,6 +10,7 @@
 #include <bpl/net/AddrInfo.h>
 
 #include <pinode/TemperatureMonitor.h>
+#include <pinode/HeaterStatus.h>
 #include <pinode/SensorInfo.h>
 
 namespace pinode {
@@ -27,28 +28,33 @@ namespace pinode {
         bool Start(const std::list<std::filesystem::path>& paths);
 
         bool EnableSensor();
+        bool EnableHeater();
 
         void Terminate();
 
         void WaitForTermination();
 
-        // NOTE: call this directly for now as we only need 1 thread.
-        void Svc_();
     private:
-        bool LoadConfig_(const std::list<std::filesystem::path>& paths);
+        void Svc_();
+        bool LoadSensorConfig_(const std::list<std::filesystem::path>& paths);
 
         pinode::SensorInfoPtr        m_sensorInfo;
         std::chrono::milliseconds    m_refreshInterval;
         bool                         m_enableTemperature = true;
         bool                         m_enableHumidity    = true;
         uint16_t 					 m_port              = 9999;
-        bool                         m_terminate        = false;
         std::string                  m_location = "<No Location Set>";
         bpl::net::UdpPtr             m_udp;
         bpl::net::UdpPacketProcessor m_packetProcessor;
 
+        std::shared_ptr<std::thread>     m_serverThread;
+        bool                            m_terminate = false;
+
         pinode::TemperatureMonitorPtr     m_temperatureMonitor;
+        pinode::HeaterStatusPtr          m_heaterStatus;
     };
+
+    typedef std::shared_ptr<Server> ServerPtr;
 }; // namespace
 
 #endif //PINODE_SERVER_H_

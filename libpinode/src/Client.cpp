@@ -14,6 +14,8 @@
 namespace pinode {
     Client::Client()
         : m_monitorPeriod(5000) {
+
+        m_heaterStatus = std::make_shared<pinode::HeaterStatus>();
     }
 
     Client::~Client() {
@@ -133,7 +135,7 @@ namespace pinode {
         return true;
     } // HandleHumidityPacket_
 
-bool Client::HandleSensorInfoPacket_(bpl::net::PacketPtr packet) {
+    bool Client::HandleSensorInfoPacket_(bpl::net::PacketPtr packet) {
         PacketSensorInfo* pkt = static_cast<PacketSensorInfo*>(packet->getPacketData());
 
         if (sizeof(PacketSensorInfo) != packet->getPacketSize()) {
@@ -164,6 +166,21 @@ bool Client::HandleSensorInfoPacket_(bpl::net::PacketPtr packet) {
 
         return true;
     } // HandleHumidityPacket_
+
+    bool Client::HandleHeaterStatusPacket_(bpl::net::PacketPtr packet) {
+        if (!m_heaterStatus->isPacket(packet)) {
+            return false;
+        }
+
+        if (!m_heaterStatus->LoadFromPacket(packet)) {
+            m_heaterStatusPacketValid = false;
+            return false;
+        }
+
+        m_heaterStatusPacketValid = true;
+
+        return true;
+    } // HandleHeaterStatusPacket_
 
     void Client::ReceiverSvc_() {
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
@@ -235,7 +252,7 @@ bool Client::HandleSensorInfoPacket_(bpl::net::PacketPtr packet) {
         bpl::net::PacketCache::getInstance().Push(packet);
     } // SendGetTemperaturePacket_
 
-void Client::SendGetSensorInfo_() {
+    void Client::SendGetSensorInfo_() {
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
 
         PacketGetSensorInfo* pkt = static_cast<PacketGetSensorInfo*>(packet->getPacketData());
@@ -254,6 +271,25 @@ void Client::SendGetSensorInfo_() {
         bpl::net::PacketCache::getInstance().Push(packet);
     } // SendGetSensorInfo_
 
+    void Client::SendGetHeaterStatus_() {
+        bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
+
+        PacketGetHeaterStatus* pkt = static_cast<PacketGetHeaterStatus*>(packet->getPacketData());
+
+        pkt->type = htons(pinode::PacketOpType::PacketOp_GET_HEATER_STATUS);
+        pkt->len = htons(sizeof(PacketGetHeaterStatus));
+
+        packet->setPacketDataSize(sizeof(PacketGetHeaterStatus));
+
+        DEBUG_MSG("Sending Packet of " << sizeof(PacketGetHeaterStatus) << " bytes");
+
+        if (!m_udp.Send(packet, m_addr)) {
+            ERROR_MSG("Failed to send packet");
+        }
+
+        bpl::net::PacketCache::getInstance().Push(packet);
+    } // SendGetHeaterStatus_
+
     void Client::MonitorSvc_() {
         bpl::sys::Tick tick(m_monitorPeriod);
 
@@ -266,13 +302,18 @@ void Client::SendGetSensorInfo_() {
                 break;
             }
 
-            if (m_hasTemperature)
-                SendGetTemperaturePacket_();
+            if (m_sensorEnable) {
+                if (m_hasTemperature)
+                    SendGetTemperaturePacket_();
 
-            if (m_hasHumidity)
-                SendGetHumidityPacket_();
+                if (m_hasHumidity)
+                    SendGetHumidityPacket_();
 
-            SendGetSensorInfo_();
+                SendGetSensorInfo_();
+            }
+            if (m_heaterEnable) {
+                SendGetHeaterStatus_();
+            }
         }
         DEBUG_MSG("Monitor thread terminating...");
     } // MonitorSvc_

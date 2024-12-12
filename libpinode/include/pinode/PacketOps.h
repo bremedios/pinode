@@ -13,8 +13,8 @@ namespace pinode {
         PacketOp_TEMPERATURE=4,
         PacketOp_GET_HUMIDITY =5,
         PacketOp_HUMIDITY=6,
-        PacketOp_GET_INFO =7,
-        PacketOp_XX_SENSOR_INFO=8,
+        PacketOp_GET_HEATER_STATUS=7,
+        PacketOp_HEATER_STATUS=8,
     }; // PacketOpType
 /*
     struct PacketGetCaps {
@@ -66,6 +66,12 @@ namespace pinode {
         bool reserved2;
         char location[64];
     };
+
+    struct PacketGetHeaterStatus {
+        uint16_t type;
+        uint16_t len;
+    };
+
 
 }; // namespace pinode
 #endif //PINODE_PACKETOPS_H_

@@ -12,6 +12,7 @@
 #include "pinode/PacketOpGetTemperature.h"
 #include "pinode/PacketOpGetHumidity.h"
 #include "pinode/PacketOpGetSensorInfo.h"
+#include "pinode/PacketOpGetHeaterStatus.h"
 
 #include "Debug.h"
 
@@ -67,10 +68,10 @@ namespace pinode {
     bool Server::Start(const std::list<std::filesystem::path>& paths) {
         m_sensorInfo = std::make_shared<pinode::SensorInfo>();
 
-        if (!LoadConfig_(paths)) {
-	    ERROR_MSG("LoadConfig_() failed");
+        if (!LoadSensorConfig_(paths)) {
+	        ERROR_MSG("LoadConfig_() failed");
 
-	    return false;
+	        return false;
         }
 
         m_udp = std::make_shared<bpl::net::Udp>();
@@ -82,6 +83,9 @@ namespace pinode {
 
             return false;
         }
+
+        m_terminate = false;
+        m_serverThread = std::make_shared<std::thread>(&Server::Svc_, this);
 
         return true;
     } // Start
@@ -107,7 +111,15 @@ namespace pinode {
         return true;
     } // EnableSensor
 
-    bool Server::LoadConfig_(const std::list<std::filesystem::path>& paths) {
+    bool Server::EnableHeater() {
+        m_heaterStatus = std::make_shared<HeaterStatus>();
+
+        m_packetProcessor.AddPacketOp(PacketOpGetHeaterStatus::packetOpCreate(m_udp, m_heaterStatus));
+
+        return true;
+    } // EnableHeater
+
+    bool Server::LoadSensorConfig_(const std::list<std::filesystem::path>& paths) {
         std::string path = bpl::sys::Path::getFilenameFromList(paths);
 
         if (path.empty()) {
@@ -155,7 +167,7 @@ namespace pinode {
         DEBUG_MSG("Refresh interval (ms): " << m_refreshInterval.count());
 
         return true;
-    } // LoadConfig
+    } // LoadSensorConfig_
 
     void Server::Terminate() {ERROR_MSG("Not implemented");}
 
