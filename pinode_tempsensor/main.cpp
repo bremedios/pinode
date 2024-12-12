@@ -16,19 +16,17 @@ int main(void) {
     paths.emplace_back("pinode-sensor.json");
     paths.emplace_back("/etc/pinode/sensor.json");
 
-    if (!server.Start(paths)) {
-        std::cout << "    ERROR: Failed to start server" << std::endl;
-
-        return -1;
-    }
-
     if (!server.EnableSensor()) {
         std::cout << "    ERROR: Failed to enable sensor component in server" << std::endl;
 
         return -1;
     }
 
-    server.Svc_();
+    if (!server.Start(paths)) {
+        std::cout << "    ERROR: Failed to start server" << std::endl;
+
+        return -1;
+    }
 
     return 0;
 } // main
