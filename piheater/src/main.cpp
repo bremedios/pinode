@@ -75,6 +75,7 @@ int main (int argc, char** argv) {
 
     controller.setHeaterControl(controlPtr);
     controller.setPinodeClient(client);
+    controller.setHeaterStatus(server->getHeaterStatus());
     controller.setThreshold(0.5f);
     controller.setTemperature(20.5f);
 

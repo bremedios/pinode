@@ -17,10 +17,12 @@ namespace pinode {
         if (temp > (m_temperature + (m_temperatureThreshold / 2))) {
             DEBUG_MSG("Turning off heater: Setpoint[" << std::to_string(m_temperature) << "] Current: [" << temp << "]");
             m_heaterControl->Off();
+            m_heaterStatus->setOn(false);
         }
         else if (temp < (m_temperature - (m_temperatureThreshold / 2))) {
             DEBUG_MSG("Turning on heater: Setpoint[" << std::to_string(m_temperature) << "] Current: [" << temp << "]");
             m_heaterControl->On();
+            m_heaterStatus->setOn(true);
         }
         else {
             DEBUG_MSG("Temperature Threshold: " << m_temperatureThreshold);
@@ -29,6 +31,11 @@ namespace pinode {
             DEBUG_MSG("No change to heater: Setpoint[" << std::to_string(m_temperature) << "] Current: [" << temp << "]");
 
         }
+
+        m_heaterStatus->setOverridden(false);   // not yet supported
+        m_heaterStatus->setName("Heater");
+        m_heaterStatus->setProgramTemperature(m_temperatureThreshold); // not yet supported
+        m_heaterStatus->setTemperature(m_temperatureThreshold);
 
         return true;
     } // Update

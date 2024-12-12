@@ -34,6 +34,8 @@ namespace pinode {
 
         void WaitForTermination();
 
+        pinode::HeaterStatusPtr getHeaterStatus() { return m_heaterStatus; }
+
     private:
         void Svc_();
         bool LoadConfig_(const std::list<std::filesystem::path>& paths);
