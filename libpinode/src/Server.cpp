@@ -18,6 +18,8 @@
 
 namespace pinode {
     Server::Server() {
+        m_udp = std::make_shared<bpl::net::Udp>();
+        m_sensorInfo = std::make_shared<pinode::SensorInfo>();
     }
 
     Server::~Server() {
@@ -68,15 +70,12 @@ namespace pinode {
     }
 
     bool Server::Start(const std::list<std::filesystem::path>& paths) {
-        m_sensorInfo = std::make_shared<pinode::SensorInfo>();
 
         if (!LoadConfig_(paths)) {
 	        ERROR_MSG("LoadConfig_() failed");
 
 	        return false;
         }
-
-        m_udp = std::make_shared<bpl::net::Udp>();
 
         DEBUG_MSG("Binding to UDP Port " << m_port);
 
