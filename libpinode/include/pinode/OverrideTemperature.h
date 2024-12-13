@@ -1,0 +1,8 @@
+//
+// Created by bradr on 12/13/24.
+//
+
+#ifndef OVERRIDETEMPERATURE_H
+#define OVERRIDETEMPERATURE_H
+
+#endif //OVERRIDETEMPERATURE_H

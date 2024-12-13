@@ -8,11 +8,12 @@
 #include <pinode/HeaterControlHw.h>
 #include <pinode/Client.h>
 #include <pinode/HeaterStatus.h>
+#include <bpl/sys/LocalTimePoint.h>
 
 namespace pinode {
     class HeaterController {
     public:
-        HeaterController()=default;
+        HeaterController();
         ~HeaterController()=default;
 
         [[nodiscard]] bool Update();
@@ -24,11 +25,14 @@ namespace pinode {
         void setHeaterStatus(HeaterStatusPtr heaterStatus) { m_heaterStatus=heaterStatus; }
 
     private:
+        bpl::sys::LocalTimePoint    m_timeStart;
+        bpl::sys::LocalTimePoint    m_timeStop;
         HeaterStatusPtr    m_heaterStatus;
         ClientPtr          m_client;
         HeaterControlHwPtr m_heaterControl;
         float              m_temperature=20.5;
         float              m_temperatureThreshold=0.5f;
+        float              m_temperatureLow=18.0f;
     }; // class HeaterController
 }; // pinode
 
