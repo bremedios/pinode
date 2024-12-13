@@ -56,6 +56,8 @@ int main (int argc, char** argv) {
         return -1;
     }
 
+    client->EnableSensor(true);
+
     std::list<std::filesystem::path> paths;
 
     paths.emplace_back("pinode-heater.json");
