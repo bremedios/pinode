@@ -50,6 +50,11 @@ namespace pinode{
 
         struct Packet_HeaterStatus* packetHeaterStatus = static_cast<struct Packet_HeaterStatus*>(packet->getPacketData());
 
+        DEBUG_MSG("Current Data");
+        DEBUG_MSG("    Temperature:         " << getTemperature());
+        DEBUG_MSG("    Program Temperature: " << getProgramTemperature());
+        DEBUG_MSG("    On:                  " << isOn());
+
         packetHeaterStatus->type = htons(pinode::PacketOpType::PacketOp_HEATER_STATUS);
         packetHeaterStatus->len = htons(sizeof(struct Packet_HeaterStatus));
 

@@ -34,8 +34,8 @@ namespace pinode {
 
         m_heaterStatus->setOverridden(false);   // not yet supported
         m_heaterStatus->setName("Heater");
-        m_heaterStatus->setProgramTemperature(m_temperatureThreshold); // not yet supported
-        m_heaterStatus->setTemperature(m_temperatureThreshold);
+        m_heaterStatus->setProgramTemperature(m_temperature); // not yet supported
+        m_heaterStatus->setTemperature(m_temperature);
 
         return true;
     } // Update

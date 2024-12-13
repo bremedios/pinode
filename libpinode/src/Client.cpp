@@ -215,6 +215,11 @@ namespace pinode {
                 continue;
             }
 
+            if (HandleHeaterStatusPacket_(packet)) {
+                DEBUG_CLIENT_MSG("Received Heater status packet");
+                continue;
+            }
+
             ERROR_MSG("Unknown packet received");
         }
 
