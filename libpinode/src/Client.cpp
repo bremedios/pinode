@@ -24,6 +24,8 @@ namespace pinode {
     }
 
     bool Client::Connect(const std::string& host, unsigned short port) {
+        DEBUG_CLIENT_MSG("Connect (" << host << ", " << port << ")");
+
         m_name = host + ":" + std::to_string(port);
 
         if (!m_udp.OpenSocket()) {
@@ -44,6 +46,7 @@ namespace pinode {
     } // Connect
 
     bool Client::Start() {
+        DEBUG_CLIENT_MSG("Starting ...");
         m_terminate = false;
 
         m_monitorThread = std::make_shared<std::thread>(&Client::MonitorSvc_, this);
@@ -53,55 +56,57 @@ namespace pinode {
     } // Start
 
     void Client::Terminate() {
-        DEBUG_MSG("Termination requested.");
+        DEBUG_CLIENT_MSG("Termination requested.");
         m_terminate = true;
 
         m_udp.Close();
     } // Terminate
 
     void Client::WaitForTermination() {
-        Terminate();
+        DEBUG_CLIENT_MSG("Waiting for termination requested");
 
         if (nullptr != m_monitorThread.get()) {
-            DEBUG_MSG("Waiting for termination of monitor thread");
+            DEBUG_CLIENT_MSG("Waiting for termination of monitor thread");
             m_monitorThread->join();
 
             m_monitorThread.reset();
         }
 
         if (nullptr != m_receiverThread.get()) {
-            DEBUG_MSG("Waiting for termination of receiver thread");
+            DEBUG_CLIENT_MSG("Waiting for termination of receiver thread");
             m_receiverThread->join();
 
             m_receiverThread.reset();
         }
+        DEBUG_CLIENT_MSG("Waiting for termination completed");
     } // WaitForTermination
 
     bool Client::HandleTemperaturePacket_(bpl::net::PacketPtr packet) {
         PacketTemperature* pkt = static_cast<PacketTemperature*>(packet->getPacketData());
 
         if (sizeof(PacketTemperature) != packet->getPacketSize()) {
-            DEBUG_MSG("Packet type incorrect size");
+            DEBUG_CLIENT_MSG("Packet type incorrect size");
 
             return false;
         }
 
-
         if (PacketOpType::PacketOp_TEMPERATURE != ntohs(pkt->type)) {
-            DEBUG_MSG("Packet type not Get Temperature");
+            DEBUG_CLIENT_MSG("Packet type not Get Temperature");
 
             return false;
         }
 
         // final check for size, this should always be correct as long as we are not corrupt.
         if (sizeof(PacketTemperature) != ntohs(pkt->len)) {
-            DEBUG_MSG("Packet has incorrect size encoded");
+            DEBUG_CLIENT_MSG("Packet has incorrect size encoded");
 
             return false;
         }
 
         m_temperature = static_cast<float>(ntohl(pkt->temperature)) / 100.0f;
         m_temperatureTimeStamp = std::chrono::steady_clock::now();
+
+        DEBUG_CLIENT_MSG("Temperature Packet handled: Temp: " << m_temperature);
 
         return true;
     } // HandleTemperaturePacket_
@@ -110,21 +115,21 @@ namespace pinode {
         PacketHumidity* pkt = static_cast<PacketHumidity*>(packet->getPacketData());
 
         if (sizeof(PacketHumidity) != packet->getPacketSize()) {
-            DEBUG_MSG("Packet type incorrect size");
+            DEBUG_CLIENT_MSG("Packet type incorrect size");
 
             return false;
         }
 
 
         if (PacketOpType::PacketOp_HUMIDITY != ntohs(pkt->type)) {
-            DEBUG_MSG("Packet type not Get Humidity");
+            DEBUG_CLIENT_MSG("Packet type not Get Humidity");
 
             return false;
         }
 
         // final check for size, this should always be correct as long as we are not corrupt.
         if (sizeof(PacketHumidity) != ntohs(pkt->len)) {
-            DEBUG_MSG("Packet has incorrect size encoded");
+            DEBUG_CLIENT_MSG("Packet has incorrect size encoded");
 
             return false;
         }
@@ -139,20 +144,20 @@ namespace pinode {
         PacketSensorInfo* pkt = static_cast<PacketSensorInfo*>(packet->getPacketData());
 
         if (sizeof(PacketSensorInfo) != packet->getPacketSize()) {
-            DEBUG_MSG("Packet type incorrect size");
+            DEBUG_CLIENT_MSG("Packet type incorrect size");
 
             return false;
         }
 
         if (PacketOpType::PacketOp_SENSOR_INFO != ntohs(pkt->type)) {
-            DEBUG_MSG("Packet type not Sensor Info");
+            DEBUG_CLIENT_MSG("Packet type not Sensor Info");
 
             return false;
         }
 
         // final check for size, this should always be correct as long as we are not corrupt.
         if (sizeof(PacketSensorInfo) != ntohs(pkt->len)) {
-            DEBUG_MSG("Packet has incorrect size encoded");
+            DEBUG_CLIENT_MSG("Packet has incorrect size encoded");
 
             return false;
         }
@@ -183,6 +188,8 @@ namespace pinode {
     } // HandleHeaterStatusPacket_
 
     void Client::ReceiverSvc_() {
+        DEBUG_CLIENT_MSG("Receiver thread started");
+
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
 
         while (!m_terminate) {
@@ -194,24 +201,24 @@ namespace pinode {
              }
 
             if (HandleTemperaturePacket_(packet)) {
-                DEBUG_MSG("Received temperature packet");
+                DEBUG_CLIENT_MSG("Received temperature packet");
                 continue;
             }
 
             if (HandleHumidityPacket_(packet)) {
-                DEBUG_MSG("Received temperature packet");
+                DEBUG_CLIENT_MSG("Received temperature packet");
                 continue;
             }
 
             if (HandleSensorInfoPacket_(packet)) {
-                DEBUG_MSG("Received sensor Info packet");
+                DEBUG_CLIENT_MSG("Received sensor Info packet");
                 continue;
             }
 
             ERROR_MSG("Unknown packet received");
         }
 
-        DEBUG_MSG("Receiver thread terminating...");
+        DEBUG_CLIENT_MSG("Receiver thread terminating...");
     } // ReceiverSvc_
 
     void Client::SendGetHumidityPacket_() {
@@ -224,7 +231,7 @@ namespace pinode {
 
         packet->setPacketDataSize(sizeof(PacketGetHumidity));
 
-        DEBUG_MSG("Sending Packet of " << sizeof(PacketGetHumidity) << " bytes");
+        DEBUG_CLIENT_MSG("Sending Packet of " << sizeof(PacketGetHumidity) << " bytes");
 
         if (!m_udp.Send(packet, m_addr)) {
             ERROR_MSG("Failed to send packet");
@@ -253,6 +260,8 @@ namespace pinode {
     } // SendGetTemperaturePacket_
 
     void Client::SendGetSensorInfo_() {
+        DEBUG_CLIENT_MSG("Sending Get Sensor Info");
+
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
 
         PacketGetSensorInfo* pkt = static_cast<PacketGetSensorInfo*>(packet->getPacketData());
@@ -262,7 +271,7 @@ namespace pinode {
 
         packet->setPacketDataSize(sizeof(PacketGetSensorInfo));
 
-        DEBUG_MSG("Sending Packet of " << sizeof(PacketGetSensorInfo) << " bytes");
+        DEBUG_CLIENT_MSG("Sending Packet of " << sizeof(PacketGetSensorInfo) << " bytes");
 
         if (!m_udp.Send(packet, m_addr)) {
             ERROR_MSG("Failed to send packet");
@@ -281,7 +290,7 @@ namespace pinode {
 
         packet->setPacketDataSize(sizeof(PacketGetHeaterStatus));
 
-        DEBUG_MSG("Sending Packet of " << sizeof(PacketGetHeaterStatus) << " bytes");
+        DEBUG_CLIENT_MSG("Sending Packet of " << sizeof(PacketGetHeaterStatus) << " bytes");
 
         if (!m_udp.Send(packet, m_addr)) {
             ERROR_MSG("Failed to send packet");
@@ -291,6 +300,7 @@ namespace pinode {
     } // SendGetHeaterStatus_
 
     void Client::MonitorSvc_() {
+        DEBUG_CLIENT_MSG("Monitor Thread Started");
         bpl::sys::Tick tick(m_monitorPeriod);
 
         //  We'll send out all our queries every monitor period.
@@ -299,23 +309,30 @@ namespace pinode {
             tick.Wait();
 
             if (m_terminate) {
+                DEBUG_CLIENT_MSG("Terminating");
                 break;
             }
 
             if (m_sensorEnable) {
-                if (m_hasTemperature)
+                if (m_hasTemperature) {
+                    DEBUG_CLIENT_MSG("Sending Get Temperature");
                     SendGetTemperaturePacket_();
+                }
 
-                if (m_hasHumidity)
+                if (m_hasHumidity) {
+                    DEBUG_CLIENT_MSG("Sending Get Humidity");
                     SendGetHumidityPacket_();
+                }
 
+                DEBUG_CLIENT_MSG("Sending Get Sensor Info");
                 SendGetSensorInfo_();
             }
             if (m_heaterEnable) {
+                DEBUG_CLIENT_MSG("Sending Get Heater Status");
                 SendGetHeaterStatus_();
             }
         }
-        DEBUG_MSG("Monitor thread terminating...");
+        DEBUG_CLIENT_MSG("Monitor thread terminating...");
     } // MonitorSvc_
 
 }; // namespace pinode

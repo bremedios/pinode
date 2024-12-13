@@ -70,6 +70,8 @@ int main(void) {
             continue;
         }
 
+        client->EnableSensor();
+
         // If we've initialized properly, we add it to our map.
         clientMap[it] = client;
     }
