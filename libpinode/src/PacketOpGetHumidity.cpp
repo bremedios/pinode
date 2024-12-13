@@ -60,6 +60,8 @@ namespace pinode {
             return false;
         }
 
+        DEBUG_MSG("Packet is Get Humidity");
+
         return true;
     } // isMatch
 

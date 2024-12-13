@@ -36,7 +36,7 @@ namespace pinode {
         float getHumidity() const {return m_humidity; }
         std::chrono::time_point<std::chrono::steady_clock> getHumidityTimestamp() const { return m_humidityTimeStamp; };
 
-        bool heaterStatusPacketValid() const { return m_heaterStatusPacketValid; }
+        bool hasHeaterStatus() const { return m_heaterStatusPacketValid; }
         pinode::HeaterStatusPtr getHeaterStatus() const { return m_heaterStatus; }
 
         const std::string& getName() const {return m_name; }

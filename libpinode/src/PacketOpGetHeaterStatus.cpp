@@ -59,6 +59,7 @@ namespace pinode {
             return false;
         }
 
+        DEBUG_MSG("Packet is Get Heater Status");
         return true;
     } // isMatch
 

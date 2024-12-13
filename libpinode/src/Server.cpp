@@ -109,6 +109,8 @@ namespace pinode {
         m_packetProcessor.AddPacketOp(PacketOpGetHumidity::packetOpCreate(m_udp, m_temperatureMonitor));
         m_packetProcessor.AddPacketOp(PacketOpGetSensorInfo::packetOpCreate(m_udp, m_sensorInfo));
 
+        DEBUG_MSG("Sensor Enabled");
+
         return true;
     } // EnableSensor
 
@@ -116,6 +118,8 @@ namespace pinode {
         m_heaterStatus = std::make_shared<HeaterStatus>();
 
         m_packetProcessor.AddPacketOp(PacketOpGetHeaterStatus::packetOpCreate(m_udp, m_heaterStatus));
+
+        DEBUG_MSG("Heater Enabled");
 
         return true;
     } // EnableHeater

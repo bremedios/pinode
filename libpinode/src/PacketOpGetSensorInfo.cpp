@@ -59,6 +59,9 @@ namespace pinode {
             return false;
         }
 
+
+        DEBUG_MSG("Packet is Get Sensor Info");
+
         return true;
     } // isMatch
 
