@@ -7,7 +7,7 @@
 
 namespace pinode {
     HeaterController::HeaterController() {
-        m_timeStart.set(9, 0, 0);
+        m_timeStart.set(22, 0, 0);
         m_timeStop.set(9,0,0);
     }
 
