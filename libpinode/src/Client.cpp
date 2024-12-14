@@ -245,6 +245,24 @@ namespace pinode {
         bpl::net::PacketCache::getInstance().Push(packet);
     } // SendTemperatureOverride
 
+    void Client::ClearTemperatureOverride() {
+        pinode::OverrideTemperature override;
+
+        override.setClearOverride(true);
+
+        bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
+
+        override.SaveToPacket(packet);
+
+        DEBUG_CLIENT_MSG("Sending Packet of " << packet->getPacketSize() << " bytes");
+
+        if (!m_udp.Send(packet, m_addr)) {
+            ERROR_MSG("Failed to send packet");
+        }
+
+        bpl::net::PacketCache::getInstance().Push(packet);
+    } // ClearTemperatureOverride
+
     void Client::SendGetHumidityPacket_() {
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
 

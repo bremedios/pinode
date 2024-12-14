@@ -54,8 +54,14 @@ namespace pinode {
 
         DEBUG_MSG("Setting temperature (HeaterStatus) to : " << m_overrideTemperature->GetTemperature());
 
-        m_heaterStatus->setTemperature(m_overrideTemperature->getTemperature());
-        m_heaterStatus->setOverridden(true);
+        if (m_overrideTemperature->isClearOverrideSet()) {
+            m_heaterStatus->setOverridden(false);
+            m_heaterStatus->setTemperature(m_heaterStatus->getProgramTemperature());
+        }
+        else {
+            m_heaterStatus->setTemperature(m_overrideTemperature->getTemperature());
+            m_heaterStatus->setOverridden(true);
+        }
 
         return true;
     } // Process

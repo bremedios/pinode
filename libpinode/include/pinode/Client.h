@@ -42,6 +42,7 @@ namespace pinode {
         const std::string& getName() const {return m_name; }
 
         void SendTemperatureOverride(float temperature);
+        void ClearTemperatureOverride();
 
         void WaitForTermination();
     private:

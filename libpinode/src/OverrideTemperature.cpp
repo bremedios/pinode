@@ -58,6 +58,7 @@ namespace pinode{
         packetOverrideTemperature->type = htons(pinode::PacketOpType::PacketOp_OVERRIDE_TEMPERATURE);
         packetOverrideTemperature->len = htons(sizeof(struct Packet_OverrideTemperature));
         packetOverrideTemperature->temperature = htonl(static_cast<int>(std::lround(getTemperature() * 100)));
+        packetOverrideTemperature->clearOverride = m_clearOverride;
 
         packet->setPacketDataSize(sizeof(struct Packet_OverrideTemperature));
 
@@ -72,6 +73,7 @@ namespace pinode{
         struct Packet_OverrideTemperature* packetOverrideTemperature = static_cast<struct Packet_OverrideTemperature*>(packet->getPacketData());
 
         setTemperature(static_cast<float>(ntohl(packetOverrideTemperature->temperature)) / 100.0f);
+        setClearOverride(packetOverrideTemperature->clearOverride);
 
         return true;
     } // LoadFromPacket
