@@ -8,6 +8,7 @@
 #include <memory>
 #include <chrono>
 
+#include <bpl/sys/Tick.h>
 #include <bpl/net/AddrInfo.h>
 #include <bpl/net/Udp.h>
 
@@ -76,6 +77,9 @@ namespace pinode {
         // heater status items
         pinode::HeaterStatusPtr m_heaterStatus;
         bool m_heaterStatusPacketValid = false;
+
+        bpl::sys::Tick m_monitorTick;
+
 
         bpl::net::Udp                     m_udp;
         bpl::net::AddrInfo                m_addr;

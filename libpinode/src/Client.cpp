@@ -14,7 +14,8 @@
 
 namespace pinode {
     Client::Client()
-        : m_monitorPeriod(5000) {
+        : m_monitorPeriod(5000)
+        , m_monitorTick(std::chrono::milliseconds(5000)){
 
         m_heaterStatus = std::make_shared<pinode::HeaterStatus>();
     }
@@ -59,6 +60,7 @@ namespace pinode {
     void Client::Terminate() {
         DEBUG_CLIENT_MSG("Termination requested.");
         m_terminate = true;
+        m_monitorTick.Release();
 
         m_udp.Close();
     } // Terminate
@@ -196,10 +198,14 @@ namespace pinode {
         while (!m_terminate) {
             bpl::net::AddrInfo addr;
 
-             if (!m_udp.Recv(packet, addr)) {
-                 ERROR_MSG("Failed to receive packet");
-                 continue;
-             }
+            if (!m_udp.Recv(packet, addr)) {
+                ERROR_MSG("Failed to receive packet");
+                continue;
+            }
+
+            if (m_terminate) {
+                break;
+            }
 
             if (HandleTemperaturePacket_(packet)) {
                 DEBUG_CLIENT_MSG("Received temperature packet");
@@ -343,12 +349,11 @@ namespace pinode {
 
     void Client::MonitorSvc_() {
         DEBUG_CLIENT_MSG("Monitor Thread Started");
-        bpl::sys::Tick tick(m_monitorPeriod);
 
         //  We'll send out all our queries every monitor period.
         while (!m_terminate) {
             // Wait until our next monitor period
-            tick.Wait();
+            m_monitorTick.Wait();
 
             if (m_terminate) {
                 DEBUG_CLIENT_MSG("Terminating");
