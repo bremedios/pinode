@@ -50,6 +50,7 @@ namespace pinode {
         if (highTemp != m_inHighTemp) {
             m_heaterStatus->setOverridden(false);
             m_heaterStatus->setProgramTemperature(m_targetTemperature);
+            m_inHighTemp = highTemp;
         }
 
         // If our heater is overridden, then our target temperature is whatever
