@@ -8,6 +8,7 @@
 #include <bpl/net/Packet.h>
 
 #include <pinode/PacketOps.h>
+#include <pinode/OverrideTemperature.h>
 
 #include "Debug.h"
 
@@ -225,6 +226,24 @@ namespace pinode {
 
         DEBUG_CLIENT_MSG("Receiver thread terminating...");
     } // ReceiverSvc_
+
+    void Client::SendTemperatureOverride(float temperature) {
+        pinode::OverrideTemperature override;
+
+        override.setTemperature(temperature);
+
+        bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();
+
+        override.SaveToPacket(packet);
+
+        DEBUG_CLIENT_MSG("Sending Packet of " << packet->getPacketSize() << " bytes");
+
+        if (!m_udp.Send(packet, m_addr)) {
+            ERROR_MSG("Failed to send packet");
+        }
+
+        bpl::net::PacketCache::getInstance().Push(packet);
+    } // SendTemperatureOverride
 
     void Client::SendGetHumidityPacket_() {
         bpl::net::PacketPtr packet = bpl::net::PacketCache::getInstance().Pop();

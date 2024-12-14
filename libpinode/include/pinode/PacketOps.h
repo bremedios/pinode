@@ -15,6 +15,7 @@ namespace pinode {
         PacketOp_HUMIDITY=6,
         PacketOp_GET_HEATER_STATUS=7,
         PacketOp_HEATER_STATUS=8,
+        PacketOp_OVERRIDE_TEMPERATURE=9
     }; // PacketOpType
 /*
     struct PacketGetCaps {

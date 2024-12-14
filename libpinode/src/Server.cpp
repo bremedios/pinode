@@ -13,6 +13,7 @@
 #include "pinode/PacketOpGetHumidity.h"
 #include "pinode/PacketOpGetSensorInfo.h"
 #include "pinode/PacketOpGetHeaterStatus.h"
+#include "pinode/PacketOpOverrideTemperature.h"
 
 #include "Debug.h"
 
@@ -118,6 +119,7 @@ namespace pinode {
         m_heaterStatus = std::make_shared<HeaterStatus>();
 
         m_packetProcessor.AddPacketOp(PacketOpGetHeaterStatus::packetOpCreate(m_udp, m_heaterStatus));
+        m_packetProcessor.AddPacketOp(PacketOpOverrideTemperature::packetOpCreate(m_udp, m_heaterStatus));
 
         DEBUG_MSG("Heater Enabled");
 

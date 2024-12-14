@@ -33,6 +33,7 @@ namespace pinode {
         float              m_temperature=20.5;
         float              m_temperatureThreshold=0.5f;
         float              m_temperatureLow=18.0f;
+        bool               m_inHighTemp=false;
     }; // class HeaterController
 }; // pinode
 
