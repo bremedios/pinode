@@ -19,7 +19,7 @@ namespace pinode{
             return false;
         }
 
-        if (packet->getPacketSize() < sizeof(struct Packet_OverrideTemperature)) {
+        if (packet->getPacketSize() != sizeof(struct Packet_OverrideTemperature)) {
             DEBUG_MSG("Packet size incorrect");
 
             return false;
@@ -39,6 +39,8 @@ namespace pinode{
             return false;
         }
 
+        DEBUG_MSG("Packet is Override Temperature");
+
         return true;
     } // isPacket
 
@@ -56,6 +58,8 @@ namespace pinode{
         packetOverrideTemperature->type = htons(pinode::PacketOpType::PacketOp_OVERRIDE_TEMPERATURE);
         packetOverrideTemperature->len = htons(sizeof(struct Packet_OverrideTemperature));
         packetOverrideTemperature->temperature = htonl(static_cast<int>(std::lround(getTemperature() * 100)));
+
+        packet->setPacketDataSize(sizeof(struct Packet_OverrideTemperature));
 
         return true;
     } // SaveToPacket

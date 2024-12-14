@@ -19,7 +19,7 @@ namespace pinode{
             return false;
         }
 
-        if (packet->getPacketSize() < sizeof(struct Packet_HeaterStatus)) {
+        if (packet->getPacketSize() != sizeof(struct Packet_HeaterStatus)) {
             DEBUG_MSG("Packet size incorrect");
 
             return false;
@@ -71,6 +71,8 @@ namespace pinode{
         }
 
         strcpy(packetHeaterStatus->name, name.c_str());
+
+        packet->setPacketDataSize(sizeof(struct Packet_HeaterStatus));
 
         return true;
     } // SaveToPacket
