@@ -5,12 +5,14 @@
 
 #include <pinode/HeaterControlHwStub.h>
 
+#include "Debug.h"
+
 namespace pinode {
     void HeaterControlHwStub::On() {
-        std::cout << "Heater On" << std::endl;
+        DEBUG_HW_MSG("Heater On");
     } // On
 
     void HeaterControlHwStub::Off() {
-        std::cout << "Heater Off" << std::endl;
+        DEBUG_HW_MSG("Heater Off");
     } // Off
 }; // namespace pinode

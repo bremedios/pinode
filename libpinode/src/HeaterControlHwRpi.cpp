@@ -10,7 +10,7 @@
 namespace pinode {
 
     HeaterControlHwRpi::HeaterControlHwRpi() {
-        DEBUG_MSG("Enablilng Raspberry Pi HeaterControl");
+        DEBUG_HW_MSG("Enablilng Raspberry Pi HeaterControl");
         if (0 > wiringPiSetup()) {
           ERROR_MSG("wiringPiSetup failed");
         }
@@ -27,15 +27,14 @@ namespace pinode {
     }// HeaterControlHwRpi
 
     void HeaterControlHwRpi::On() {
-        DEBUG_MSG("Turning Heater On");
+        DEBUG_HW_MSG("Turning Heater On");
         pinMode(m_pin, OUTPUT);
         digitalWrite(m_pin, HIGH);
     }// On
 
     void HeaterControlHwRpi::Off() {
-        DEBUG_MSG("Turning Heater Off");
+        DEBUG_HW_MSG("Turning Heater Off");
         pinMode(m_pin, OUTPUT);
         digitalWrite(m_pin, LOW);
     }// Off
 }; // namespace pinode
-
