@@ -58,6 +58,8 @@ namespace pinode {
             m_targetTemperature = m_heaterStatus->getTemperature();
         }
 
+        DEBUG_MSG("Target Temperature is: " << m_targetTemperature);
+
         // We do nothing if we are within our temperature range to avoid turning
         // on and off too frequently.
         //
